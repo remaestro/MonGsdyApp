@@ -1,0 +1,72 @@
+{
+  "app": {
+    "title": "GSDY Application",
+    "header": {
+      "home": "Home",
+      "profile": "Profile",
+      "settings": "Settings",
+      "logout": "Logout",
+      "login": "Login",
+      "admin": "Administration"
+    },
+    "footer": {
+      "copyright": "© 2025 GSDY. All rights reserved.",
+      "terms": "Terms of Use",
+      "privacy": "Privacy Policy",
+      "contact": "Contact"
+    },
+    "auth": {
+      "login": {
+        "title": "Login",
+        "username": "Username",
+        "password": "Password",
+        "submit": "Sign in",
+        "forgot": "Forgot password?",
+        "register": "Register",
+        "error": {
+          "credentials": "Invalid username or password",
+          "general": "An error occurred during login"
+        }
+      },
+      "logout": {
+        "confirm": "Are you sure you want to logout?"
+      }
+    },
+    "errors": {
+      "notFound": {
+        "title": "Page Not Found",
+        "message": "The page you are looking for does not exist.",
+        "action": "Back to Home"
+      },
+      "serverError": {
+        "title": "Server Error",
+        "message": "An error occurred on the server. Please try again later.",
+        "action": "Refresh"
+      },
+      "accessDenied": {
+        "title": "Access Denied",
+        "message": "You do not have permission to access this page.",
+        "action": "Back to Home"
+      },
+      "general": "An error occurred"
+    },
+    "notifications": {
+      "success": "Success",
+      "error": "Error",
+      "warning": "Warning",
+      "info": "Information"
+    },
+    "actions": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "add": "Add",
+      "search": "Search",
+      "filter": "Filter",
+      "close": "Close",
+      "back": "Back"
+    },
+    "loading": "Loading..."
+  }
+}

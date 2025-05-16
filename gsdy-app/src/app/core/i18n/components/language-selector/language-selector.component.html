@@ -1,0 +1,39 @@
+<div class="relative inline-block text-left">
+  <!-- Bouton du sélecteur de langue -->
+  <button 
+    type="button" 
+    (click)="toggleDropdown()" 
+    class="inline-flex items-center justify-center gap-x-1.5 px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 focus:outline-none">
+    <!-- Drapeau (optionnel) -->
+    <span *ngIf="getLanguageFlag(currentLanguage)" class="flag-icon flag-icon-{{ getLanguageFlag(currentLanguage) }}"></span>
+    
+    <!-- Langue actuelle -->
+    <span>{{ getLanguageName(currentLanguage) }}</span>
+    
+    <!-- Icône de menu déroulant -->
+    <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+    </svg>
+  </button>
+  
+  <!-- Menu déroulant -->
+  <div 
+    *ngIf="isDropdownOpen" 
+    class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+    <div class="py-1" role="menu">
+      <button 
+        *ngFor="let lang of languages"
+        type="button"
+        (click)="changeLanguage(lang.code)"
+        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" 
+        [class.font-medium]="lang.code === currentLanguage"
+        role="menuitem">
+        <!-- Drapeau (optionnel) -->
+        <span *ngIf="lang.flag" class="flag-icon flag-icon-{{ lang.flag }} mr-2"></span>
+        
+        <!-- Nom de la langue -->
+        {{ lang.name }}
+      </button>
+    </div>
+  </div>
+</div>

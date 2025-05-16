@@ -1,0 +1,72 @@
+{
+  "app": {
+    "title": "Application GSDY",
+    "header": {
+      "home": "Accueil",
+      "profile": "Profil",
+      "settings": "Paramètres",
+      "logout": "Déconnexion",
+      "login": "Connexion",
+      "admin": "Administration"
+    },
+    "footer": {
+      "copyright": "© 2025 GSDY. Tous droits réservés.",
+      "terms": "Conditions d'utilisation",
+      "privacy": "Politique de confidentialité",
+      "contact": "Contact"
+    },
+    "auth": {
+      "login": {
+        "title": "Connexion",
+        "username": "Nom d'utilisateur",
+        "password": "Mot de passe",
+        "submit": "Se connecter",
+        "forgot": "Mot de passe oublié ?",
+        "register": "S'inscrire",
+        "error": {
+          "credentials": "Nom d'utilisateur ou mot de passe incorrect",
+          "general": "Une erreur s'est produite lors de la connexion"
+        }
+      },
+      "logout": {
+        "confirm": "Êtes-vous sûr de vouloir vous déconnecter ?"
+      }
+    },
+    "errors": {
+      "notFound": {
+        "title": "Page non trouvée",
+        "message": "La page que vous recherchez n'existe pas.",
+        "action": "Retour à l'accueil"
+      },
+      "serverError": {
+        "title": "Erreur serveur",
+        "message": "Une erreur s'est produite sur le serveur. Veuillez réessayer plus tard.",
+        "action": "Rafraîchir"
+      },
+      "accessDenied": {
+        "title": "Accès refusé",
+        "message": "Vous n'avez pas les permissions nécessaires pour accéder à cette page.",
+        "action": "Retour à l'accueil"
+      },
+      "general": "Une erreur s'est produite"
+    },
+    "notifications": {
+      "success": "Succès",
+      "error": "Erreur",
+      "warning": "Avertissement",
+      "info": "Information"
+    },
+    "actions": {
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "add": "Ajouter",
+      "search": "Rechercher",
+      "filter": "Filtrer",
+      "close": "Fermer",
+      "back": "Retour"
+    },
+    "loading": "Chargement..."
+  }
+}
