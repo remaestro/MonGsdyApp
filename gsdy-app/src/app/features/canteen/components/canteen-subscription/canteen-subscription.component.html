@@ -1,0 +1,70 @@
+<div class="canteen-subscription-container">
+  <h2>Abonnements à la Cantine pour l'enfant {{ childId }}</h2>
+
+  <button (click)="toggleSubscriptionForm()" class="add-subscription-btn">
+    {{ showForm ? 'Annuler' : 'Nouvel Abonnement' }}
+  </button>
+
+  <div *ngIf="showForm" class="subscription-form-card">
+    <h3>{{ editingSubscription ? 'Modifier l\'Abonnement' : 'Ajouter un Abonnement' }}</h3>
+    <form [formGroup]="subscriptionForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="startDate">Date de début:</label>
+        <input type="date" id="startDate" formControlName="startDate">
+        <div *ngIf="subscriptionForm.get('startDate')?.invalid && subscriptionForm.get('startDate')?.touched" class="error-message">
+          Date de début requise.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="type">Type d'abonnement:</label>
+        <select id="type" formControlName="type">
+          <option value="full_week">Semaine complète</option>
+          <option value="specific_days">Jours spécifiques</option>
+        </select>
+      </div>
+
+      <div *ngIf="subscriptionForm.get('type')?.value === 'specific_days'" class="form-group specific-days-group">
+        <label>Choisir les jours:</label>
+        <div *ngFor="let day of getWeekDays()" class="checkbox-group">
+          <input type="checkbox" [id]="day" [value]="day" (change)="onDayCheckboxChange($event)" [checked]="isDaySelected(day)">
+          <label [for]="day">{{ day | titlecase }}</label>
+        </div>
+        <div *ngIf="subscriptionForm.get('specificDays')?.invalid && subscriptionForm.get('specificDays')?.touched && subscriptionForm.get('type')?.value === 'specific_days'" class="error-message">
+          Au moins un jour doit être sélectionné.
+        </div>      
+      </div>
+
+      <button type="submit" [disabled]="subscriptionForm.invalid" class="submit-btn">{{ editingSubscription ? 'Mettre à Jour' : 'Enregistrer' }}</button>
+      <button type="button" (click)="toggleSubscriptionForm()" class="cancel-btn">Annuler</button>
+    </form>
+  </div>
+
+  <div *ngIf="subscriptions$ | async as subscriptions; else loadingSubscriptions">
+    <div *ngIf="subscriptions.length > 0; else noSubscriptions">
+      <h3>Abonnements Actuels:</h3>
+      <ul class="subscriptions-list">
+        <li *ngFor="let sub of subscriptions" [ngClass]="{'active-sub': sub.isActive, 'inactive-sub': !sub.isActive}">
+          <div class="sub-details">
+            <p><strong>Type:</strong> {{ sub.type === 'full_week' ? 'Semaine complète' : 'Jours spécifiques' }}</p>
+            <p *ngIf="sub.type === 'specific_days'"><strong>Jours:</strong> {{ sub.specificDays?.join(', ') | titlecase }}</p>
+            <p><strong>Début:</strong> {{ sub.startDate | date: 'dd/MM/yyyy' }}</p>
+            <p *ngIf="sub.endDate"><strong>Fin:</strong> {{ sub.endDate | date: 'dd/MM/yyyy' }}</p>
+            <p><strong>Statut:</strong> <span [ngClass]="sub.isActive ? 'status-active' : 'status-inactive'">{{ sub.isActive ? 'Actif' : 'Inactif' }}</span></p>
+          </div>
+          <div class="sub-actions" *ngIf="sub.isActive">
+            <button (click)="toggleSubscriptionForm(sub)" class="edit-btn">Modifier</button>
+            <button (click)="cancelSubscription(sub.id)" class="cancel-sub-btn">Annuler l'Abonnement</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <ng-template #noSubscriptions>
+      <p class="info-message">Aucun abonnement à la cantine trouvé pour cet enfant.</p>
+    </ng-template>
+  </div>
+  <ng-template #loadingSubscriptions>
+    <p class="loading-message">Chargement des abonnements...</p>
+  </ng-template>
+
+</div>

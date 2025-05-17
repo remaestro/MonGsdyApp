@@ -1,0 +1,46 @@
+<div class="canteen-menu-container">
+  <h2>Menu de la Cantine</h2>
+  <div class="navigation-controls">
+    <button (click)="goToPreviousWeek()" class="nav-button">&#x2190; Semaine Précédente</button>
+    <button (click)="goToCurrentWeek()" class="nav-button">Semaine Actuelle ({{ getISOWeek(currentDate) }})</button>
+    <button (click)="goToNextWeek()" class="nav-button">Semaine Suivante &#x2192;</button>
+  </div>
+
+  <div *ngIf="weeklyMenu$ | async as menu; else loadingOrError">
+    <h3>Semaine {{ menu.weekNumber }} - {{ menu.year }}</h3>
+    <div class="daily-menus-grid">
+      <div *ngFor="let dailyMenu of menu.menus" class="daily-menu-card">
+        <h4>{{ getDayName(dailyMenu.date) }} <span class="date-display">({{ dailyMenu.date | date: 'dd/MM' }})</span></h4>
+        <div class="meal-item">
+          <strong>Entrée:</strong>
+          <span *ngIf="dailyMenu.starter">{{ dailyMenu.starter.name }}</span>
+          <span *ngIf="!dailyMenu.starter" class="no-meal">--</span>
+        </div>
+        <div class="meal-item">
+          <strong>Plat Principal:</strong>
+          <span>{{ dailyMenu.mainCourse.name }}</span>
+          <small *ngIf="dailyMenu.mainCourse.allergens?.length"> (Allergènes: {{ dailyMenu.mainCourse.allergens?.join(', ') }})</small>
+        </div>
+        <div class="meal-item">
+          <strong>Dessert:</strong>
+          <span *ngIf="dailyMenu.dessert">{{ dailyMenu.dessert.name }}</span>
+          <span *ngIf="!dailyMenu.dessert" class="no-meal">--</span>
+        </div>
+        <p *ngIf="dailyMenu.notes" class="menu-notes"><em>Notes: {{ dailyMenu.notes }}</em></p>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loadingOrError>
+    <div *ngIf="!(weeklyMenu$ | async) && !errorLoadingMenu" class="loading-message">
+        Chargement du menu...
+    </div>
+    <div *ngIf="errorLoadingMenu" class="error-message">
+        Impossible de charger le menu pour cette semaine.
+    </div>
+    <div *ngIf="!(weeklyMenu$ | async) && !errorLoadingMenu && !initialLoadComplete" class="info-message">
+        Veuillez sélectionner une semaine.
+    </div>
+  </ng-template>
+
+</div>

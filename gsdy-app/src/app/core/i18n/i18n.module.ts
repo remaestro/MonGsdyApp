@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { LanguageSelectorComponent } from './components/language-selector/language-selector.component';
 
 // Factory pour le chargeur de traductions
 export function HttpLoaderFactory(http: HttpClient) {
@@ -11,9 +10,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 }
 
 @NgModule({
-  declarations: [
-    LanguageSelectorComponent
-  ],
+  declarations: [],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -27,8 +24,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     })
   ],
   exports: [
-    TranslateModule,
-    LanguageSelectorComponent
+    TranslateModule
   ]
 })
 export class I18nModule { }

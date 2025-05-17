@@ -97,4 +97,23 @@ export class ToastService {
   info(message: string, autoClose = true, duration = 5000): number {
     return this.show(message, 'info', autoClose, duration);
   }
+  
+  /**
+   * Alias pour les méthodes ci-dessus (pour compatibilité)
+   */
+  showSuccess(message: string, autoClose = true, duration = 5000): number {
+    return this.success(message, autoClose, duration);
+  }
+  
+  showError(message: string, autoClose = true, duration = 5000): number {
+    return this.error(message, autoClose, duration);
+  }
+  
+  showWarning(message: string, autoClose = true, duration = 5000): number {
+    return this.warning(message, autoClose, duration);
+  }
+  
+  showInfo(message: string, autoClose = true, duration = 5000): number {
+    return this.info(message, autoClose, duration);
+  }
 }

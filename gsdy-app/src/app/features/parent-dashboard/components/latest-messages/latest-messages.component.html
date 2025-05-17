@@ -1,0 +1,28 @@
+<app-dashboard-card>
+  <span card-title>Derniers Messages</span>
+  <div card-content>
+    <div *ngIf="latestMessages$ | async as messages; else loadingOrError">
+      <div *ngIf="messages.length > 0; else noMessages">
+        <ul>
+          <li *ngFor="let message of messages; trackBy: trackByMessageId" class="mb-3 pb-3 border-b border-gray-200 last:border-b-0 last:pb-0 last:mb-0">
+            <a [routerLink]="message.link || '/messaging'" class="hover:text-blue-600">
+              <h6 class="font-semibold text-sm">{{ message.subject }}</h6>
+              <p class="text-xs text-gray-500">De : {{ message.sender.name }} - {{ message.createdAt | date:'dd/MM/yy HH:mm' }}</p>
+              <p class="text-xs text-gray-600 mt-1 truncate">{{ message.content | slice:0:100 }}</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <ng-template #noMessages>
+        <p class="text-sm text-gray-500">Aucun nouveau message.</p>
+      </ng-template>
+    </div>
+    <ng-template #loadingOrError>
+      <p class="text-sm text-gray-500">Chargement des messages...</p>
+      <!-- Vous pouvez ajouter une gestion d'erreur plus spécifique ici -->
+    </ng-template>
+  </div>
+  <div card-actions>
+    <a routerLink="/messaging" class="text-sm text-blue-500 hover:text-blue-700 font-medium">Voir tous les messages</a>
+  </div>
+</app-dashboard-card>

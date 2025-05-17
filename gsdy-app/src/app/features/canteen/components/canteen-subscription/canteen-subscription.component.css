@@ -1,0 +1,202 @@
+/* Styles pour CanteenSubscriptionComponent */
+.canteen-subscription-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #fcfcfc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.canteen-subscription-container h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.7em;
+}
+
+.add-subscription-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  margin-bottom: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.add-subscription-btn:hover {
+  background-color: #218838;
+}
+
+.subscription-form-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+  margin-bottom: 25px;
+}
+
+.subscription-form-card h3 {
+  color: #0056b3;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.3em;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-group input[type="date"],
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.specific-days-group label {
+  margin-bottom: 8px;
+}
+
+.checkbox-group {
+  display: inline-block;
+  margin-right: 15px;
+  margin-bottom: 5px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.checkbox-group label {
+  font-weight: normal;
+  color: #333;
+  vertical-align: middle;
+}
+
+.submit-btn,
+.cancel-btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95em;
+  margin-right: 10px;
+}
+
+.submit-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.submit-btn:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.subscriptions-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.subscriptions-list li {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.subscriptions-list li.active-sub {
+  border-left: 5px solid #28a745;
+}
+
+.subscriptions-list li.inactive-sub {
+  border-left: 5px solid #dc3545;
+  background-color: #f9f9f9;
+}
+
+.sub-details p {
+  margin: 5px 0;
+  font-size: 0.95em;
+  color: #444;
+}
+
+.sub-details strong {
+  color: #000;
+}
+
+.status-active {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.status-inactive {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.sub-actions button {
+  margin-left: 10px;
+  padding: 6px 12px;
+  font-size: 0.85em;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background-color: #ffc107;
+  color: #333;
+  border: none;
+}
+
+.cancel-sub-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.85em;
+  margin-top: 4px;
+}
+
+.loading-message,
+.info-message {
+  text-align: center;
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.loading-message {
+  color: #004085;
+  background-color: #cce5ff;
+}
+
+.info-message {
+  color: #383d41;
+  background-color: #e2e3e5;
+}

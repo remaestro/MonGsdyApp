@@ -1,0 +1,7 @@
+.child-selector-container {
+  /* Add any specific styles for the container if needed */
+}
+
+#childSelect {
+  min-width: 200px; /* Adjust as needed */
+}

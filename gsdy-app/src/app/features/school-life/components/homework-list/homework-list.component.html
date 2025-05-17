@@ -1,0 +1,16 @@
+<div class="homework-container" *ngIf="homework$ | async as homeworkItems">
+  <h2>Devoirs pour l'enfant {{ childId }}</h2>
+  <div *ngIf="homeworkItems.length > 0; else noHomework">
+    <ul>
+      <li *ngFor="let item of homeworkItems" [ngClass]="{'completed': item.isCompleted}">
+        <strong>{{ item.subject }}</strong> (Pour le {{ item.dueDate | date: 'dd/MM/yyyy' }}):
+        <p>{{ item.description }}</p>
+        <span *ngIf="item.isCompleted" class="status-completed">Terminé</span>
+        <span *ngIf="!item.isCompleted" class="status-pending">En attente</span>
+      </li>
+    </ul>
+  </div>
+  <ng-template #noHomework>
+    <p>Aucun devoir assigné pour le moment.</p>
+  </ng-template>
+</div>

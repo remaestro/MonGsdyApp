@@ -1,0 +1,38 @@
+<div class="calendar-container p-4 bg-white shadow rounded-lg">
+  <h3 class="text-xl font-semibold text-gray-700 mb-4">Calendrier Scolaire</h3>
+  
+  <!-- Basic Month Navigation (Placeholder) -->
+  <div class="month-navigation mb-4 flex justify-between items-center">
+    <button class="px-3 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition-colors">&lt; Précédent</button>
+    <h4 class="text-lg font-medium">{{ currentMonth | date:'MMMM yyyy':'fr' }}</h4>
+    <button class="px-3 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition-colors">Suivant &gt;</button>
+  </div>
+
+  <!-- Event List (Placeholder) -->
+  <div *ngIf="calendarEvents$ | async as events; else loadingEvents">
+    <ul *ngIf="events.length > 0; else noEvents" class="space-y-3">
+      <li *ngFor="let event of events" 
+          class="p-3 rounded-md border" 
+          [style.border-left-width]="'4px'" 
+          [style.border-left-color]="event.color || '#6366f1'">
+        <strong class="text-indigo-700">{{ event.title }}</strong>
+        <p class="text-sm text-gray-600">
+          {{ event.start | date:'dd/MM/yyyy' }} 
+          <span *ngIf="!event.allDay">{{ event.start | date:'HH:mm' }}</span>
+          <span *ngIf="event.end"> - {{ event.end | date:'dd/MM/yyyy' }} <span *ngIf="!event.allDay">{{ event.end | date:'HH:mm' }}</span></span>
+        </p>
+        <p *ngIf="event.description" class="text-xs text-gray-500 mt-1">{{ event.description }}</p>
+      </li>
+    </ul>
+    <ng-template #noEvents>
+      <p class="text-gray-500">Aucun événement à afficher pour ce mois.</p>
+    </ng-template>
+  </div>
+  <ng-template #loadingEvents>
+    <p class="text-gray-500">Chargement des événements...</p>
+  </ng-template>
+
+  <p class="mt-4 text-sm text-gray-500 italic">
+    Note: Ceci est une vue simplifiée du calendrier. Une implémentation complète nécessiterait une grille calendaire interactive.
+  </p>
+</div>

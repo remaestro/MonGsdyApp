@@ -1,0 +1,14 @@
+/* Styles pour WeeklyPlanningComponent */
+
+/* Styles spécifiques pour WeeklyPlanningComponent si nécessaire */
+
+/* Style pour les cartes d'activité (peut être global ou spécifique) */
+.activity-card {
+  transition: transform 0.2s ease-in-out;
+}
+
+.activity-card:hover {
+  transform: translateY(-2px);
+}
+
+/* S'assurer que Tailwind est bien configuré pour purger les styles non utilisés en production */

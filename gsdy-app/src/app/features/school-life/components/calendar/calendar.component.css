@@ -1,0 +1,71 @@
+/* Styles pour CalendarComponent */
+.calendar-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.calendar-header h2 {
+  font-size: 1.5em;
+  color: #333;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  text-align: center;
+}
+
+.day-header,
+.day-cell {
+  padding: 10px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+}
+
+.day-header {
+  font-weight: bold;
+  background-color: #f0f0f0;
+}
+
+.day-cell.has-event {
+  background-color: #e6f7ff;
+  cursor: pointer;
+}
+
+.event-tooltip {
+  position: absolute;
+  background-color: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  z-index: 100;
+  /* Add more styling for tooltip positioning as needed */
+}
+
+/* Basic styling for event list if shown below calendar */
+.event-list {
+  margin-top: 20px;
+}
+
+.event-item {
+  padding: 8px;
+  background-color: #e6f7ff;
+  border: 1px solid #cce0ff;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.event-item strong {
+  color: #0056b3;
+}

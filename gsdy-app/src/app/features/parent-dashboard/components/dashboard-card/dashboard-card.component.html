@@ -1,0 +1,16 @@
+<div class="bg-white shadow-lg rounded-lg p-6 m-4">
+  <div class="flex items-center mb-4">
+    <!-- <if-icon-exists> -->
+    <!-- <i [class]="iconClass + ' text-2xl mr-3'"></i> -->
+    <!-- </if-icon-exists> -->
+    <h5 class="text-xl font-semibold text-gray-700">
+      <ng-content select="[card-title]"></ng-content>
+    </h5>
+  </div>
+  <div class="text-gray-600">
+    <ng-content select="[card-content]"></ng-content>
+  </div>
+  <div class="mt-4">
+    <ng-content select="[card-actions]"></ng-content>
+  </div>
+</div>

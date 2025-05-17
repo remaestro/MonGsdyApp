@@ -93,6 +93,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
           route: '/profile'
         },
         {
+          label: 'Notifications',
+          icon: 'bell',
+          route: '/notifications'
+        },
+        {
           label: 'Paramètres',
           icon: 'settings',
           route: '/settings'

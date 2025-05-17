@@ -1,31 +1,8 @@
 # Plan Fonctionnel GSDY App
 
-## Vue d'ensemble des fonctionnalités par phase
-
-| Phase | Page / Composant | Description fonctionnelle | Détails Techniques Angular | Complexité |
-|-------|------------------|--------------------------|----------------------------|------------|
-| **Phase 1** | **Page de Login** | - Formulaire (email/password)<br>- Validation de formulaire<br>- Appel API Login | Reactive Forms + AuthService | ⭐⭐ |
-| **Phase 1** | **Page de Récupération mot de passe** | - Saisie email<br>- Notification envoyée | Formulaire simple + backend | ⭐ |
-| **Phase 1** | **Redirection Post-Login** | - Selon rôle -> parent/admin/prof | Routing dynamique | ⭐ |
-| **Phase 2** | **Dashboard Parent** | - Vue d'ensemble<br>- Solde paiements<br>- Dernières communications<br>- Planning de la semaine | DashboardCardsComponent + Services | ⭐⭐⭐ |
-| **Phase 2** | **Dashboard Admin** | - Résumé élèves, paiements, notifications envoyées | AdminDashboardComponent | ⭐⭐⭐ |
-| **Phase 3** | **Gestion des élèves (parents)** | - Fiche(s) enfants<br>- Sélection enfant actif | ChildProfileComponent | ⭐⭐ |
-| **Phase 3** | **Vie scolaire (élève)** | - Emploi du temps<br>- Devoirs à faire<br>- Bulletins de notes | CalendarComponent + HomeworkListComponent + ReportCardComponent | ⭐⭐⭐⭐ |
-| **Phase 3** | **Cantine** | - Voir menus<br>- Inscription/désinscription repas<br>- Paiement cantine | CanteenMenuComponent + CanteenSubscriptionComponent | ⭐⭐⭐ |
-| **Phase 4** | **Paiements** | - Voir factures<br>- Payer en ligne (intégration Stripe ou autre)<br>- Historique paiements | PaymentsComponent + PaymentsHistoryComponent | ⭐⭐⭐⭐ |
-| **Phase 4** | **Communication / Messagerie** | - Liste des messages<br>- Lire un message<br>- Répondre (optionnel) | MessagingModule (InboxComponent, MessageDetailComponent) | ⭐⭐⭐ |
-| **Phase 4** | **Notifications** | - Liste des notifications<br>- Marquer comme lue | NotificationsListComponent | ⭐⭐ |
-| **Phase 5** | **Documents** | - Voir certificats / documents<br>- Télécharger<br>- Signer électroniquement | DocumentsComponent + SignatureModalComponent | ⭐⭐⭐⭐ |
-| **Phase 5** | **Activités Parascolaires** | - Liste activités disponibles<br>- Inscription activité | ActivitiesListComponent | ⭐⭐⭐ |
-| **Phase 5** | **Gestion profil utilisateur** | - Modifier ses informations<br>- Changer son mot de passe | UserProfileComponent | ⭐⭐ |
-| **Phase 6** | **Admin - Gestion Élèves** | - Ajouter, Modifier, Supprimer Élèves | AdminStudentsComponent | ⭐⭐⭐ |
-| **Phase 6** | **Admin - Gestion Cantine** | - Gérer menus<br>- Voir inscriptions cantine | AdminCanteenComponent | ⭐⭐⭐ |
-| **Phase 6** | **Admin - Envoi de Communications** | - Créer des annonces<br>- Envoyer notification SMS/Email | AdminMessagingComponent | ⭐⭐⭐ |
-| **Phase 6** | **Admin - Statistiques** | - Graphiques paiements, absences, communications | AdminStatsComponent avec chart.js ou ngx-charts | ⭐⭐⭐⭐ |
-
 ## Détails d'implémentation par phase
 
-### Phase 1 - Authentification et base de l'application
+### Phase 1 - Authentification et base de l'application ✅
 
 #### Page de Login
 - **Composants**: `LoginComponent`
@@ -75,7 +52,7 @@
   - Utilisation de guards pour protéger les routes selon rôle
   - Redirection intelligente en fonction du rôle de l'utilisateur (`/parent`, `/admin`, `/teacher`)
 
-### Phase 2 - Tableaux de bord
+### Phase 2 - Tableaux de bord ✅
 
 #### Dashboard Parent
 - **Composants**: 
@@ -108,7 +85,7 @@
   - Cards de statistiques et d'actions rapides
   - Alertes pour éléments nécessitant attention
 
-### Phase 3 - Fonctionnalités élèves et cantine
+### Phase 3 - Fonctionnalités élèves et cantine ✅
 
 #### Gestion des élèves (parents)
 - **Composants**: 
@@ -179,7 +156,7 @@
   - Interface d'inscription avec calendrier
   - Gestion des cas particuliers (allergies, régimes spéciaux)
 
-### Phase 4 - Paiements, Communication et Notifications
+### Phase 4 - Paiements, Communication et Notifications ✅
 
 #### Paiements
 - **Composants**: 
@@ -256,7 +233,7 @@
   - Badge de notification dans le header
   - Support pour notifications push (optionnel)
 
-### Phase 5 - Documents et Activités
+### Phase 5 - Documents et Activités ✅
 
 #### Documents
 - **Composants**: 
@@ -361,7 +338,7 @@
   - Vérification de mot de passe sécurisée
   - Gestion des préférences utilisateur
 
-### Phase 6 - Administration
+### Phase 6 - Administration ✅
 
 #### Admin - Gestion Élèves
 - **Composants**: 

@@ -1,0 +1,63 @@
+/* Styles pour HomeworkListComponent */
+.homework-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.homework-container h2 {
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  transition: box-shadow 0.3s ease;
+}
+
+li:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+li strong {
+  color: #0056b3;
+  font-size: 1.1em;
+}
+
+li p {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  color: #555;
+  font-size: 0.95em;
+}
+
+.status-completed {
+  color: green;
+  font-weight: bold;
+}
+
+.status-pending {
+  color: orange;
+  font-weight: bold;
+}
+
+li.completed {
+  border-left: 5px solid green;
+}
+
+/* Styles pour le message "Aucun devoir" */
+ng-template p {
+  color: #777;
+  font-style: italic;
+}

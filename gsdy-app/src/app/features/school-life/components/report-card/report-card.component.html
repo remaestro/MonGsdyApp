@@ -1,0 +1,37 @@
+<div class="report-card-container" *ngIf="reportCard$ | async as reportCard">
+  <h2>Bulletin de notes pour l'enfant {{ childId }}</h2>
+  <div *ngIf="reportCard; else noReportCard">
+    <p><strong>Période:</strong> {{ reportCard.period }}</p>
+    <p><strong>Commentaire général:</strong> {{ reportCard.overallAppreciation }}</p>
+    
+    <h3>Notes par matière:</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Matière</th>
+          <th>Note</th>
+          <th>Commentaire</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let grade of reportCard.subjects">
+          <td>{{ grade.subjectName }}</td>
+          <td>{{ grade.grade }}</td> <!-- Assuming grade is string like '15/20' or 'Acquis' -->
+          <td>{{ grade.teacherAppreciation }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- <div class="overall-average">
+      <strong>Moyenne générale:</strong> {{ getOverallAverage(reportCard) | number:'1.2-2' }}/20
+    </div> -->
+
+  </div>
+  <ng-template #noReportCard>
+    <p>Aucun bulletin de notes disponible pour cette période.</p>
+  </ng-template>
+</div>
+
+<div *ngIf="!(reportCard$ | async)">
+    <p>Chargement du bulletin...</p>
+</div>

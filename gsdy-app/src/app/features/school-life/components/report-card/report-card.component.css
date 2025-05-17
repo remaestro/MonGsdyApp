@@ -1,0 +1,84 @@
+/* Styles pour ReportCardComponent */
+.report-card-container {
+  padding: 20px;
+  background-color: #fdfdfd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.report-card-container h2 {
+  font-size: 1.8em;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: center;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+}
+
+.report-card-container h3 {
+  font-size: 1.3em;
+  color: #34495e;
+  margin-top: 25px;
+  margin-bottom: 10px;
+}
+
+.report-card-container p {
+  font-size: 1em;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.report-card-container strong {
+  color: #333;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+thead {
+  background-color: #3498db;
+  color: #ffffff;
+}
+
+th, td {
+  text-align: left;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tbody tr:hover {
+  background-color: #eaf2f8;
+}
+
+.overall-average {
+  margin-top: 25px;
+  padding: 15px;
+  background-color: #e8f6fd;
+  border-left: 5px solid #3498db;
+  font-size: 1.2em;
+}
+
+.overall-average strong {
+  color: #2980b9;
+}
+
+/* Styles pour le message "Aucun bulletin" ou "Chargement" */
+ng-template p,
+.report-card-container > div > p {
+  color: #7f8c8d;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}

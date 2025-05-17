@@ -5,7 +5,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ColorPaletteDemoComponent } from './color-palette-demo.component';
 import { LayoutComponent } from './shared/components/layout/layout/layout.component';
 import { HeaderComponent } from './shared/components/layout/header/header.component';
 import { SidebarComponent } from './shared/components/layout/sidebar/sidebar.component';
@@ -17,11 +16,12 @@ import { AuthModule } from './core/auth/auth.module';
 import { ErrorHandlingModule } from './core/error-handling/error-handling.module';
 import { I18nModule } from './core/i18n/i18n.module';
 import { NotificationsModule } from './core/notifications/notifications.module';
+import { SharedModule } from './shared/shared.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Import BrowserAnimationsModule
 
 @NgModule({
   declarations: [
     AppComponent,
-    ColorPaletteDemoComponent,
     LayoutComponent,
     HeaderComponent,
     SidebarComponent,
@@ -33,10 +33,12 @@ import { NotificationsModule } from './core/notifications/notifications.module';
     HttpClientModule,
     ReactiveFormsModule,
     AppRoutingModule,
+    SharedModule,
     AuthModule,
     ErrorHandlingModule,
     I18nModule,
-    NotificationsModule
+    NotificationsModule,
+    BrowserAnimationsModule // Ajouter BrowserAnimationsModule aux imports
   ],
   providers: [],
   bootstrap: [AppComponent]
