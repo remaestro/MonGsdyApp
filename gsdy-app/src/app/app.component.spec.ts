@@ -1,11 +1,18 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { TranslateService, TranslateStore, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('AppComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    imports: [RouterTestingModule],
-    declarations: [AppComponent]
+    imports: [
+      RouterTestingModule,
+      HttpClientTestingModule,
+      TranslateModule.forRoot()
+    ],
+    declarations: [AppComponent],
+    providers: []
   }));
 
   it('should create the app', () => {

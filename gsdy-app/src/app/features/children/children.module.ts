@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; // Importer FormsModule
 import { RouterModule } from '@angular/router';
 
 import { ChildrenRoutingModule } from './children-routing.module';
@@ -20,6 +21,7 @@ import { ChildSelectorComponent } from './components/child-selector/child-select
     CommonModule,
     RouterModule, // Important for routerLink, router-outlet
     ChildrenRoutingModule,
+    FormsModule, // If child-selector uses ngModel
     // SharedModule // Uncomment if SharedModule is created and needed
   ],
   exports: [

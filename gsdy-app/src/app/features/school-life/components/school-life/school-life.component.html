@@ -1,0 +1,31 @@
+<div class="container mx-auto p-4">
+  <div *ngIf="selectedChild; else noChildSelected">
+    <h2 class="text-2xl font-semibold mb-4">Vie Scolaire de {{ selectedChild.firstName }} {{ selectedChild.lastName }}</h2>
+    
+    <!-- Sélecteur d'onglet pour Devoirs, Emploi du temps, Notes -->
+    <div class="mb-4 border-b border-gray-200">
+      <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+        <a routerLink="homework" routerLinkActive="border-indigo-500 text-indigo-600" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+          Devoirs
+        </a>
+        <a routerLink="schedule" routerLinkActive="border-indigo-500 text-indigo-600" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+          Emploi du temps
+        </a>
+        <a routerLink="report-card" routerLinkActive="border-indigo-500 text-indigo-600" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+          Bulletins
+        </a>
+      </nav>
+    </div>
+
+    <router-outlet></router-outlet> <!-- Les composants enfants (devoirs, edt, notes) s'afficheront ici -->
+
+  </div>
+  <ng-template #noChildSelected>
+    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert">
+      <p class="font-bold">Aucun enfant sélectionné</p>
+      <p>Veuillez sélectionner un enfant pour afficher les informations de sa vie scolaire.</p>
+      <!-- Optionnel: Lien vers le sélecteur d'enfant -->
+      <!-- <a routerLink="/features/children/select" class="text-blue-500 hover:underline">Sélectionner un enfant</a> -->
+    </div>
+  </ng-template>
+</div>

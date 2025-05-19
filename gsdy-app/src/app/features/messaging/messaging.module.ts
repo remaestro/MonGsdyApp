@@ -1,21 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
-// Composants
+import { MessagingRoutingModule } from './messaging-routing.module';
+import { SharedModule } from '../../shared/shared.module';
+
 import { InboxComponent } from './components/inbox/inbox.component';
 import { MessageDetailComponent } from './components/message-detail/message-detail.component';
 import { ComposeMessageComponent } from './components/compose-message/compose-message.component';
-
-// Services
-// import { MessagingService } from './services/messaging.service'; // Le service est déjà providedIn: 'root'
-
-const routes: Routes = [
-  { path: '', component: InboxComponent },
-  { path: 'compose', component: ComposeMessageComponent },
-  { path: ':id', component: MessageDetailComponent }
-];
 
 @NgModule({
   declarations: [
@@ -25,9 +17,9 @@ const routes: Routes = [
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild(routes),
-    FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MessagingRoutingModule,
+    SharedModule
   ]
 })
 export class MessagingModule { }

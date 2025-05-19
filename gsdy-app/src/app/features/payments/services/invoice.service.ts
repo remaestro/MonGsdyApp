@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '../../../../../environments/environment';
-import { Invoice } from './payment.service';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { Invoice } from '../models/invoice.model';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,23 +13,26 @@ export class InvoiceService {
 
   constructor(private http: HttpClient) { }
 
-  // Récupérer les factures par statut
-  getInvoicesByStatus(status: 'pending' | 'paid' | 'overdue'): Observable<Invoice[]> {
-    return this.http.get<Invoice[]>(`${this.apiUrl}?status=${status}`);
+  getInvoicesByParent(parentId: string): Observable<Invoice[]> {
+    const params = new HttpParams().set('parentId', parentId);
+    return this.http.get<Invoice[]>(this.apiUrl, { params }).pipe(
+      map(invoices => invoices.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())),
+      catchError(error => {
+        console.error(`Erreur lors de la récupération des factures pour le parent ${parentId}`, error);
+        return of([]); // Retourner un tableau vide en cas d'erreur
+      })
+    );
   }
 
-  // Récupérer les détails d'une facture
-  getInvoiceDetails(id: string): Observable<Invoice> {
-    return this.http.get<Invoice>(`${this.apiUrl}/${id}`);
+  getInvoiceById(invoiceId: string): Observable<Invoice | undefined> {
+    return this.http.get<Invoice>(`${this.apiUrl}/${invoiceId}`).pipe(
+      catchError(error => {
+        console.error(`Erreur lors de la récupération de la facture ${invoiceId}`, error);
+        return of(undefined); // Retourner undefined en cas d'erreur
+      })
+    );
   }
 
-  // Marquer une facture comme payée
-  markAsPaid(id: string): Observable<Invoice> {
-    return this.http.patch<Invoice>(`${this.apiUrl}/${id}/mark-paid`, {});
-  }
-
-  // Génération de PDF pour une facture
-  generatePdf(id: string): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/${id}/pdf`, { responseType: 'blob' });
-  }
+  // Potentiellement, ajouter d'autres méthodes pour la gestion des factures si l'admin peut les créer/modifier
+  // Exemple: createInvoice, updateInvoiceStatus, etc.
 }

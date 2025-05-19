@@ -1,0 +1,97 @@
+<div class="container mx-auto p-4 md:p-8">
+  <div class="flex flex-col sm:flex-row justify-between items-center mb-6 pb-4 border-b border-gray-200">
+    <h1 class="text-2xl sm:text-3xl font-bold text-primary-700 mb-3 sm:mb-0">Centre de Notifications</h1>
+    <div class="flex space-x-2">
+      <button 
+        *ngIf="((notifications$ | async)?.length ?? 0) > 0 && ((notificationService.unreadCount$ | async) ?? 0) > 0"
+        (click)="markAllAsRead()" 
+        class="btn btn-secondary btn-sm flex items-center"
+        title="Marquer toutes les notifications comme lues">
+        <i class="fas fa-check-double mr-2"></i> Tout marquer comme lu
+      </button>
+      <button 
+        (click)="refreshNotifications()" 
+        class="btn btn-outline-primary btn-sm flex items-center"
+        title="Rafraîchir les notifications">
+        <i class="fas fa-sync-alt mr-2" [ngClass]="{'animate-spin': isLoading}"></i> Rafraîchir
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading && !(notifications$ | async)?.length" class="flex justify-center items-center h-64">
+    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary-500"></div>
+    <p class="ml-4 text-lg text-gray-600">Chargement des notifications...</p>
+  </div>
+
+  <div *ngIf="error" class="bg-error-50 border-l-4 border-error-500 text-error-700 p-4 rounded-md shadow-md mb-6" role="alert">
+    <div class="flex">
+      <div class="py-1">
+        <svg class="fill-current h-6 w-6 text-error-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zM11 14v-4h-2v4h2zm0-6V6h-2v2h2z"/></svg>
+      </div>
+      <div>
+        <p class="font-bold">Erreur de chargement</p>
+        <p class="text-sm">{{ error }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !error && (notifications$ | async)?.length === 0" class="text-center text-gray-500 py-16 bg-white shadow-lg rounded-lg">
+    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+    </svg>
+    <p class="mt-4 text-xl font-semibold text-gray-700">Aucune notification</p>
+    <p class="text-gray-500">Vous êtes à jour ! Il n'y a pas de nouvelles notifications.</p>
+  </div>
+
+  <div *ngIf="!error && (notifications$ | async) as notifications" class="space-y-4">
+    <div *ngFor="let notification of notifications" 
+        (click)="handleNotificationClick(notification)" 
+        [ngClass]="{
+          'bg-primary-50 hover:bg-primary-100': !notification.isRead, 
+          'bg-white hover:bg-gray-50': notification.isRead,
+          'opacity-75': notification.isRead && !notification.link,
+          'cursor-pointer': true
+        }"
+        class="p-4 sm:p-5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 ease-in-out flex items-start space-x-3 sm:space-x-4 relative">
+      
+      <div class="flex-shrink-0 mt-1">
+        <span *ngIf="!notification.isRead" class="absolute -top-1 -left-1 inline-block h-3 w-3 bg-accent-500 rounded-full ring-2 ring-white" title="Non lu"></span>
+        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-xl sm:text-2xl text-white"
+             [ngClass]="getNotificationTypeColor(notification.type)">
+          <i [class]="getNotificationIcon(notification)"></i>
+        </div>
+      </div>
+
+      <div class="flex-grow min-w-0">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-1">
+          <h3 [ngClass]="{'font-semibold': !notification.isRead, 'text-gray-800': true}" class="text-md sm:text-lg leading-tight truncate" [title]="notification.title">
+            {{ notification.title }}
+          </h3>
+          <p class="text-xs text-gray-500 mt-1 sm:mt-0 sm:ml-2 flex-shrink-0">{{ notification.createdAt | date:'dd/MM/yy HH:mm' }}</p>
+        </div>
+        <p class="text-sm text-gray-600 leading-normal line-clamp-2" [title]="notification.message">
+          {{ notification.message }}
+        </p>
+        <div class="mt-2 flex justify-end space-x-2">
+          <a *ngIf="notification.link" 
+             (click)="$event.stopPropagation(); handleNotificationClick(notification)" 
+             class="btn btn-link btn-xs text-primary-600 hover:text-primary-800">
+            Voir le détail <i class="fas fa-arrow-right ml-1"></i>
+          </a>
+          <button *ngIf="!notification.isRead" 
+                  (click)="$event.stopPropagation(); markOneAsRead(notification)" 
+                  class="btn btn-icon btn-xs text-gray-500 hover:text-primary-600" 
+                  title="Marquer comme lu">
+            <i class="fas fa-check"></i>
+          </button>
+        </div>
+      </div>
+       <button *ngIf="canBeDismissed(notification)"
+              (click)="$event.stopPropagation(); dismissNotification(notification.id)"
+              class="absolute top-2 right-2 btn btn-icon btn-xs text-gray-400 hover:text-error-500"
+              title="Rejeter cette notification">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+</div>

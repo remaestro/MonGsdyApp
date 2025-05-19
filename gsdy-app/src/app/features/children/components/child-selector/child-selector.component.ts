@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, tap } from 'rxjs/operators';
 import { Child } from '../../models/child.model';
 import { ChildrenService } from '../../services/children.service';
-// import { ActiveChildService } from '../../../core/services/active-child.service'; // Предполагаемый сервис
+import { AuthService } from '../../../../core/auth/services/auth.service'; // Importer AuthService
 
 @Component({
   selector: 'app-child-selector',
@@ -15,22 +16,37 @@ export class ChildSelectorComponent implements OnInit, OnDestroy {
   selectedChildId: string | null = null;
   private destroy$ = new Subject<void>();
 
-  // constructor(private childrenService: ChildrenService, private activeChildService: ActiveChildService) { }
-  constructor(private childrenService: ChildrenService) { }
+  constructor(
+    private childrenService: ChildrenService,
+    private authService: AuthService, // Injecter AuthService
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
-    this.children$ = this.childrenService.getChildren();
-    // this.activeChildService.getActiveChildId().pipe(
-    //   takeUntil(this.destroy$)
-    // ).subscribe(id => {
-    //   this.selectedChildId = id;
-    // });
+    // Récupérer l'ID du parent connecté (simulé pour l'instant)
+    // Dans une vraie application, vous obtiendrez cela à partir du service d'authentification après la connexion.
+    const parentId = this.authService.getCurrentUserId(); // Supposons que cette méthode existe et retourne l'ID de l'utilisateur connecté
 
-    // Mock selection of the first child if available
-    this.children$?.pipe(takeUntil(this.destroy$)).subscribe(children => {
-      if (children && children.length > 0 && !this.selectedChildId) {
-        // this.onChildSelect(children[0].id);
-      }
+    if (parentId) {
+      this.children$ = this.childrenService.getChildrenByParentId(parentId).pipe(
+        tap(children => {
+          // Si aucun enfant n'est sélectionné et qu'il y a des enfants, sélectionner le premier par défaut
+          if (!this.selectedChildId && children && children.length > 0) {
+            // Ne pas appeler onChildSelect ici pour éviter une boucle si la sélection déclenche une navigation
+            // this.selectedChildId = children[0].id;
+            // this.childrenService.setSelectedChild(this.selectedChildId);
+          }
+        })
+      );
+    } else {
+      console.error("Parent ID not found, cannot load children.");
+      // Gérer le cas où l'ID du parent n'est pas disponible
+    }
+
+    this.childrenService.selectedChild$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(selectedChild => {
+      this.selectedChildId = selectedChild ? selectedChild.id : null;
     });
   }
 
@@ -38,8 +54,14 @@ export class ChildSelectorComponent implements OnInit, OnDestroy {
     const selectElement = event.target as HTMLSelectElement;
     const childId = selectElement.value;
     if (childId) {
-      // this.activeChildService.setActiveChildId(childId);
-      console.log('Selected child ID:', childId); // Placeholder
+      this.childrenService.setSelectedChild(childId);
+      // Naviguer vers la page de l'enfant sélectionné, par exemple, le profil ou un tableau de bord
+      // Exemple: this.router.navigate(['/features/children/profile', childId]);
+      // Ou si la navigation est gérée par les composants parents (Vie Scolaire, Cantine),
+      // le simple fait de mettre à jour le service suffira.
+      console.log('Selected child ID in ChildSelectorComponent:', childId);
+    } else {
+      this.childrenService.setSelectedChild(null);
     }
   }
 

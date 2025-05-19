@@ -1,0 +1,130 @@
+<div class="container mx-auto p-4">
+  <h1 class="text-3xl font-bold text-primary-700 mb-6">Nouveau Message</h1>
+
+  <div *ngIf="isLoading" class="flex justify-center items-center h-32">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-primary-500"></div>
+    <p class="ml-4 text-gray-600">Chargement du message original...</p>
+  </div>
+
+  <form [formGroup]="composeForm" (ngSubmit)="onSubmit()" class="bg-white shadow-xl rounded-lg p-6 space-y-6" *ngIf="!isLoading">
+    
+    <!-- Destinataires -->
+    <div>
+      <label for="recipientSearch" class="block text-sm font-medium text-gray-700 mb-1">À:</label>
+      <div class="flex flex-wrap gap-2 mb-2 border border-gray-300 rounded-md p-2 min-h-[40px]">
+        <span *ngFor="let recipient of selectedRecipients" class="inline-flex items-center px-2 py-1 bg-primary-100 text-primary-700 text-sm font-medium rounded-full">
+          {{ recipient.name }}
+          <button type="button" (click)="removeRecipient(recipient)" class="ml-1.5 text-primary-500 hover:text-primary-700">
+            <i class="fas fa-times-circle"></i>
+          </button>
+        </span>
+        <input 
+          type="text" 
+          id="recipientSearch" 
+          formControlName="recipientSearch" 
+          placeholder="Rechercher un destinataire..."
+          class="flex-grow p-1 focus:ring-primary-500 focus:border-primary-500 border-none outline-none min-w-[200px]"
+          autocomplete="off">
+      </div>
+      <div *ngIf="(filteredRecipients$ | async) as recipients" class="relative">
+        <ul *ngIf="composeForm.get('recipientSearch')?.value && recipients.length > 0" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+          <li *ngFor="let recipient of recipients" (click)="addRecipient(recipient)" class="px-3 py-2 hover:bg-primary-50 cursor-pointer text-sm">
+            {{ recipient.name }} ({{ recipient.role }})
+          </li>
+        </ul>
+      </div>
+      <div *ngIf="composeForm.touched && selectedRecipients.length === 0 && error?.includes('destinataire')" class="text-sm text-error-600 mt-1">
+        Veuillez sélectionner au moins un destinataire.
+      </div>
+    </div>
+
+    <!-- Sujet -->
+    <div>
+      <label for="subject" class="block text-sm font-medium text-gray-700">Sujet:</label>
+      <input type="text" id="subject" formControlName="subject" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2 focus:ring-primary-500 focus:border-primary-500">
+      <div *ngIf="composeForm.get('subject')?.invalid && composeForm.get('subject')?.touched" class="text-sm text-error-600 mt-1">
+        Le sujet est requis.
+      </div>
+    </div>
+
+    <!-- Contenu -->
+    <div>
+      <label for="content" class="block text-sm font-medium text-gray-700">Message:</label>
+      <textarea id="content" formControlName="content" rows="8" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2 focus:ring-primary-500 focus:border-primary-500"></textarea>
+      <div *ngIf="composeForm.get('content')?.invalid && composeForm.get('content')?.touched" class="text-sm text-error-600 mt-1">
+        Le contenu du message est requis.
+      </div>
+    </div>
+
+    <!-- Priorité -->
+    <div>
+      <label for="priority" class="block text-sm font-medium text-gray-700">Priorité:</label>
+      <select id="priority" formControlName="priority" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md bg-white">
+        <option value="normal">Normale</option>
+        <option value="high">Haute</option>
+        <option value="urgent">Urgente</option>
+      </select>
+    </div>
+
+    <!-- Pièces jointes -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Pièces jointes:</label>
+      <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+        <div class="space-y-1 text-center">
+          <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <div class="flex text-sm text-gray-600">
+            <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500">
+              <span>Télécharger des fichiers</span>
+              <input id="file-upload" name="file-upload" type="file" class="sr-only" multiple (change)="onFileSelected($event)">
+            </label>
+            <p class="pl-1">ou glissez-déposez</p>
+          </div>
+          <p class="text-xs text-gray-500">PNG, JPG, PDF, DOCX, etc. (Max 5MB par fichier)</p>
+        </div>
+      </div>
+      <div *ngIf="attachments.length > 0" class="mt-4 space-y-2">
+        <p class="text-sm font-medium text-gray-700">Fichiers sélectionnés:</p>
+        <ul class="list-disc list-inside space-y-1">
+          <li *ngFor="let file of attachments; let i = index" class="text-sm text-gray-600 flex justify-between items-center bg-gray-50 p-2 rounded-md">
+            <span>
+              <i class="fas fa-paperclip mr-2 text-gray-400"></i>
+              {{ file.name }} ({{ formatFileSize(file.size) }})
+            </span>
+            <button type="button" (click)="removeAttachment(i)" class="text-error-500 hover:text-error-700">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Messages d'erreur/succès -->
+    <div *ngIf="error" class="bg-error-100 border border-error-400 text-error-700 px-4 py-3 rounded relative" role="alert">
+      <strong class="font-bold">Erreur!</strong>
+      <span class="block sm:inline"> {{ error }}</span>
+    </div>
+    <div *ngIf="successMessage" class="bg-success-100 border border-success-400 text-success-700 px-4 py-3 rounded relative" role="alert">
+      <strong class="font-bold">Succès!</strong>
+      <span class="block sm:inline"> {{ successMessage }}</span>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-end space-x-3">
+      <button type="button" routerLink="/messaging/inbox" class="btn btn-secondary" [disabled]="isSending">
+        Annuler
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="isSending">
+        <span *ngIf="!isSending">Envoyer</span>
+        <span *ngIf="isSending">
+          <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Envoi en cours...
+        </span>
+      </button>
+    </div>
+  </form>
+</div>

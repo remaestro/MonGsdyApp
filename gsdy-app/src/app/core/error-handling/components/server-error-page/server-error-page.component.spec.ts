@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { ServerErrorPageComponent } from './server-error-page.component';
 
@@ -8,7 +9,8 @@ describe('ServerErrorPageComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ServerErrorPageComponent]
+      declarations: [ServerErrorPageComponent],
+      imports: [RouterTestingModule]
     });
     fixture = TestBed.createComponent(ServerErrorPageComponent);
     component = fixture.componentInstance;

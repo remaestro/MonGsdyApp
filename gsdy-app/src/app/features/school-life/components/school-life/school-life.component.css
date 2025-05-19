@@ -1,0 +1,4 @@
+/* Styles spécifiques pour SchoolLifeComponent */
+:host {
+  display: block;
+}

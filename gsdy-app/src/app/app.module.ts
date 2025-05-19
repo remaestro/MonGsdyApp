@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'; // CUSTOM_ELEMENTS_SCHEMA importé
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -15,9 +15,11 @@ import { LoaderComponent } from './shared/components/layout/loader/loader.compon
 import { AuthModule } from './core/auth/auth.module';
 import { ErrorHandlingModule } from './core/error-handling/error-handling.module';
 import { I18nModule } from './core/i18n/i18n.module';
-import { NotificationsModule } from './core/notifications/notifications.module';
+import { NotificationsModule } from './core/notifications/notifications.module'; // Décommenté ou ajouté
 import { SharedModule } from './shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Import BrowserAnimationsModule
+import { MessagingModule } from './features/messaging/messaging.module'; // Ajout de l'importation
+import { NotificationsModule as FeatureNotificationsModule } from './features/notifications/notifications.module'; // Importation du nouveau module de fonctionnalité
 
 @NgModule({
   declarations: [
@@ -37,10 +39,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
     AuthModule,
     ErrorHandlingModule,
     I18nModule,
-    NotificationsModule,
-    BrowserAnimationsModule // Ajouter BrowserAnimationsModule aux imports
+    NotificationsModule, // Ajouté ici
+    BrowserAnimationsModule, // Ajouter BrowserAnimationsModule aux imports
+    MessagingModule, // Module pour la messagerie
+    FeatureNotificationsModule // Ajout du module de notifications de fonctionnalité
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA] // Ajouté ici
 })
 export class AppModule { }

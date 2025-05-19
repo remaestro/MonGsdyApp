@@ -1,0 +1,53 @@
+<div class="schedule-container">
+  <app-child-selector></app-child-selector>
+
+  <div *ngIf="isLoading" class="loading-indicator">
+    Chargement de l'emploi du temps...
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!isLoading && !error && !selectedChild" class="info-message">
+    Veuillez sélectionner un enfant pour voir son emploi du temps.
+  </div>
+
+  <div *ngIf="!isLoading && !error && selectedChild && !schedule" class="info-message">
+    Aucun emploi du temps trouvé pour {{ selectedChild.firstName }}.
+  </div>
+
+  <div *ngIf="!isLoading && !error && selectedChild && schedule" class="schedule-table-container">
+    <h2>Emploi du temps de {{ selectedChild.firstName }} {{ selectedChild.lastName }} ({{ schedule.schoolYear }})</h2>
+    <table class="schedule-table">
+      <thead>
+        <tr>
+          <th>Heure</th>
+          <th *ngFor="let day of daysOfWeek">{{ day }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let timeSlot of timeSlots">
+          <td>{{ timeSlot }}</td>
+          <td *ngFor="let day of daysOfWeek" [ngSwitch]="!!getEntryForDayAndTime(day, timeSlot)">
+            <div *ngSwitchCase="true" 
+                 class="schedule-entry"
+                 [style.backgroundColor]="getEntryForDayAndTime(day, timeSlot)?.color || '#f0f0f0'">
+              <ng-container *ngIf="getEntryForDayAndTime(day, timeSlot) as entry">
+                <strong>{{ entry.subject }}</strong>
+                <div *ngIf="entry.teacher" class="entry-detail">{{ entry.teacher }}</div>
+                <div *ngIf="entry.room" class="entry-detail">Salle: {{ entry.room }}</div>
+              </ng-container>
+            </div>
+            <div *ngSwitchDefault class="empty-slot"></div>
+          </td>
+        </tr>
+        <tr *ngIf="timeSlots.length === 0 && schedule.entries.length > 0">
+            <td [attr.colspan]="daysOfWeek.length + 1" class="info-message">
+                Les données d'emploi du temps existent mais n'ont pas pu être organisées en créneaux horaires.
+            </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

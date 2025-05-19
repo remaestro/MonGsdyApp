@@ -1,0 +1,124 @@
+<div class="container mx-auto px-4 py-8">
+  <!-- Bouton Retour et Titre -->
+  <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+    <button (click)="goBack()" class="btn btn-link text-primary-600 hover:text-primary-800 flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Retour
+    </button>
+    <h1 class="text-2xl font-semibold text-gray-800">Détail du Message</h1>
+  </div>
+
+  <!-- État de chargement -->
+  <div *ngIf="isLoading" class="flex justify-center items-center h-64">
+    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary-500"></div>
+  </div>
+
+  <!-- État d'erreur -->
+  <div *ngIf="!isLoading && error" class="bg-error-50 border-l-4 border-error-500 text-error-700 p-4 rounded-md shadow-md" role="alert">
+    <div class="flex">
+      <div class="py-1">
+        <svg class="fill-current h-6 w-6 text-error-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zM11 14v-4h-2v4h2zm0-6V6h-2v2h2z"/></svg>
+      </div>
+      <div>
+        <p class="font-bold">Erreur</p>
+        <p class="text-sm">{{ error }}</p>
+        <button (click)="goBack()" class="mt-3 btn btn-secondary btn-sm">Retour à la liste</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenu du message -->
+  <div *ngIf="!isLoading && !error && message" class="bg-white shadow-xl rounded-lg overflow-hidden">
+    <!-- En-tête du message -->
+    <div class="p-6 border-b border-gray-200 bg-gray-50">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3">
+        <h2 class="text-2xl font-bold text-primary-700 mb-2 sm:mb-0 break-all">{{ message.subject }}</h2>
+        <div class="flex-shrink-0 flex space-x-2">
+          <button *ngIf="canReply()" (click)="replyToMessage()" class="btn btn-primary btn-sm flex items-center" title="Répondre">
+            <i class="fas fa-reply mr-1"></i> Répondre
+          </button>
+          <button *ngIf="canMarkAsUnread()" (click)="toggleReadStatus()" class="btn btn-outline-secondary btn-sm flex items-center" title="Marquer comme non lu">
+            <i class="fas fa-envelope-open mr-1"></i> Non lu
+          </button>
+           <button *ngIf="canMarkAsRead()" (click)="toggleReadStatus()" class="btn btn-outline-secondary btn-sm flex items-center" title="Marquer comme lu">
+            <i class="fas fa-envelope mr-1"></i> Marquer lu
+          </button>
+          <button (click)="deleteMessage()" class="btn btn-danger btn-sm flex items-center" title="Supprimer">
+            <i class="fas fa-trash mr-1"></i> Supprimer
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 text-sm text-gray-600">
+        <div>
+          <span class="font-medium text-gray-800">De:</span> 
+          {{ message.sender.name }} 
+          <span class="text-gray-500">({{ message.sender.role | titlecase }})</span>
+        </div>
+        <div>
+          <span class="font-medium text-gray-800">Date:</span> 
+          {{ message.createdAt | date:'dd/MM/yyyy à HH:mm' }}
+        </div>
+        <div>
+          <span class="font-medium text-gray-800">À:</span> 
+          <span *ngFor="let recipient of message.recipients; let last = last">
+            {{ recipient.name }} <span class="text-gray-500">({{ recipient.role | titlecase }})</span>{{ last ? '' : ', ' }}
+          </span>
+        </div>
+        <div *ngIf="message.priority && message.priority !== 'normal'">
+          <span class="font-medium text-gray-800">Priorité:</span> 
+          <span class="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full"
+                [ngClass]="{
+                  'bg-warning-100 text-warning-800': message.priority === 'high',
+                  'bg-error-100 text-error-800': message.priority === 'urgent'
+                }">
+            {{ message.priority | titlecase }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Corps du message -->
+    <div class="p-6 text-gray-800 leading-relaxed whitespace-pre-wrap">
+      {{ message.content }}
+    </div>
+
+    <!-- Pièces jointes -->
+    <div *ngIf="message.attachments && message.attachments.length > 0" class="p-6 border-t border-gray-200 bg-gray-50">
+      <h3 class="text-lg font-semibold text-gray-700 mb-4">Pièces jointes ({{ message.attachments.length }})</h3>
+      <ul class="space-y-3">
+        <li *ngFor="let attachment of message.attachments" class="flex items-center justify-between p-3 bg-white rounded-md border border-gray-200 hover:shadow-sm transition-shadow">
+          <div class="flex items-center min-w-0">
+            <i [class]="getAttachmentIcon(attachment)" class="text-2xl text-primary-500 mr-4 flex-shrink-0"></i>
+            <div class="min-w-0">
+              <a [href]="attachment.fileUrl" target="_blank" class="text-primary-600 hover:underline font-medium truncate block" [title]="attachment.fileName">
+                {{ attachment.fileName }}
+              </a>
+              <p class="text-xs text-gray-500">
+                {{ formatFileSize(attachment.size) }} 
+                <span *ngIf="attachment.fileType">- {{ attachment.fileType }}</span>
+              </p>
+            </div>
+          </div>
+          <a [href]="attachment.fileUrl" target="_blank" [download]="attachment.fileName" class="btn btn-secondary btn-xs ml-4 flex-shrink-0">
+            <i class="fas fa-download mr-1"></i> Télécharger
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Message non trouvé -->
+  <div *ngIf="!isLoading && !message && !error" class="text-center text-gray-500 py-16 bg-white shadow-lg rounded-lg">
+    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <p class="text-xl font-semibold text-gray-700">Message non trouvé</p>
+    <p class="text-gray-500">Le message que vous recherchez n'existe pas ou a été supprimé.</p>
+    <button (click)="goBack()" class="btn btn-primary mt-6">
+      Retour à la liste
+    </button>
+  </div>
+</div>

@@ -1,204 +1,202 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { Observable, of, throwError, Subject } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { Message, Attachment, MessagePriority } from '../models/message.model';
 import { environment } from '../../../../environments/environment';
-import { Message, MessageRequest } from '../models/message.model'; // Corrected path
-import { User } from '../../../core/models/user.model'; // Import User model
+import { AuthService } from '../../../core/auth/services/auth.service';
+import { User } from '../../../core/models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessagingService {
   private apiUrl = `${environment.apiUrl}/messages`;
-  private usersApiUrl = `${environment.apiUrl}/users`; // Added for user search
+  private messageStatusChanged = new Subject<{ messageId: string; newStatus: string }>();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
-  // MOCK DATA (Remove or replace with actual API calls)
-  private mockUsers: User[] = [
-    { id: 'user1', name: 'Alice Martin (Parent)', role: 'parent', email: 'alice.martin@example.com' },
-    { id: 'user2', name: 'Bob Durand (Enseignant)', role: 'teacher', email: 'bob.durand@example.com' },
-    { id: 'user3', name: 'Charlie Dupont (Admin)', role: 'admin', email: 'charlie.dupont@example.com' },
-    { id: 'user4', name: 'David Lefevre (Parent)', role: 'parent', email: 'david.lefevre@example.com' },
-    { id: 'user5', name: 'Eva Simon (Enseignant)', role: 'teacher', email: 'eva.simon@example.com' },
-  ];
-
-  private mockMessages: Message[] = [
-    {
-      id: 'msg1',
-      subject: 'Nouvelle note de service importante',
-      sender: this.mockUsers[2], // Admin
-      recipients: [this.mockUsers[0], this.mockUsers[1]], // Parent, Teacher
-      content: 'Une nouvelle note de service concernant les sorties scolaires a été publiée. Veuillez la consulter attentivement. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      createdAt: new Date('2025-05-16T10:00:00Z'),
-      readAt: null,
-      priority: 'high',
-      preview: 'Une nouvelle note de service concernant les sorties scolaires a été publiée...',
-      link: '/parent/messaging/msg1'
-    },
-    {
-      id: 'msg2',
-      subject: 'Rappel : Réunion parents-professeurs CM1',
-      sender: this.mockUsers[1], // Teacher
-      recipients: [this.mockUsers[0]], // Parent
-      content: 'N\'oubliez pas la réunion parents-professeurs pour la classe de CM1 demain à 18h. Nous discuterons des progrès de votre enfant et des objectifs pour le reste de l\'année. Venez nombreux!',
-      createdAt: new Date('2025-05-14T09:30:00Z'),
-      readAt: new Date('2025-05-15T11:00:00Z'),
-      priority: 'normal',
-      preview: 'N\'oubliez pas la réunion parents-professeurs pour la classe de CM1 demain...',
-      link: '/parent/messaging/msg2'
-    },
-    {
-      id: 'msg3',
-      subject: 'Invitation à la fête de l\'école',
-      sender: this.mockUsers[0], // Parent (e.g., from APE)
-      recipients: [this.mockUsers[1], this.mockUsers[2]], // Teacher, Admin
-      content: 'Vous êtes cordialement invités à la fête de l\'école qui aura lieu le Samedi 15 Juin. De nombreuses activités et surprises vous attendent. Nous comptons sur votre présence!',
-      createdAt: new Date('2025-05-12T15:00:00Z'),
-      readAt: null,
-      priority: 'normal',
-      preview: 'Vous êtes cordialement invités à la fête de l\'école qui aura lieu le...',
-      link: '/parent/messaging/msg3'
-    },
-  ];
-  // END MOCK DATA
-
-  getLatestMessages(count: number): Observable<Message[]> {
-    // Simule la récupération des derniers messages reçus non lus, puis lus
-    // Dans une vraie application, cela serait fait côté serveur
-    const unreadMessages = this.mockMessages
-      .filter(m => m.recipients.some(r => r.id === 'currentUserMockId') && !m.readAt)
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-
-    const readMessages = this.mockMessages
-      .filter(m => m.recipients.some(r => r.id === 'currentUserMockId') && m.readAt)
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-
-    const latest = [...unreadMessages, ...readMessages].slice(0, count);
-    return of(JSON.parse(JSON.stringify(latest)));
+  // Observable for components to subscribe to message status changes
+  get messageStatusChanged$(): Observable<{ messageId: string; newStatus: string }> {
+    return this.messageStatusChanged.asObservable();
   }
 
-  // Récupérer tous les messages (reçus)
-  getInboxMessages(filter?: any): Observable<Message[]> {
-    // Replace with actual API call
-    // Example: return this.http.get<Message[]>(`${this.apiUrl}/inbox`, { params: this.buildParams(filter) });
-    let messages = this.mockMessages.filter(m => m.recipients.some(r => r.id === 'currentUserMockId')); // Mock current user
-    if (filter) {
-      if (filter.read === true) messages = messages.filter(m => m.readAt !== null);
-      if (filter.read === false) messages = messages.filter(m => m.readAt === null);
-      // Add other filters (sender, dateFrom, dateTo, priority, search)
-    }
-    return of(JSON.parse(JSON.stringify(messages))); // Deep copy for immutability
+  // Call this method when a message status changes (e.g., read, unread, deleted)
+  notifyMessageStatusChange(messageId: string, newStatus: string): void {
+    this.messageStatusChanged.next({ messageId, newStatus });
   }
 
-  // Récupérer les messages envoyés
-  getSentMessages(filter?: any): Observable<Message[]> {
-    // Replace with actual API call
-    // Example: return this.http.get<Message[]>(`${this.apiUrl}/sent`, { params: this.buildParams(filter) });
-    let messages = this.mockMessages.filter(m => m.sender.id === 'currentUserMockId'); // Mock current user
-     if (filter) {
-      // Add filters (dateFrom, dateTo, priority, search)
-    }
-    return of(JSON.parse(JSON.stringify(messages))); // Deep copy
+  private getCurrentUserId(): string | null {
+    const user = this.authService.getCurrentUserSync();
+    return user ? user.id.toString() : null;
   }
 
-  // Récupérer un message par ID
-  getMessage(id: string): Observable<Message> {
-    // Replace with actual API call
-    // Example: return this.http.get<Message>(`${this.apiUrl}/${id}`);
-    const message = this.mockMessages.find(msg => msg.id === id);
-    if (message) {
-      return of(JSON.parse(JSON.stringify(message))); // Deep copy
-    }
-    return of(message as any); // Should handle not found case better
-  }
-
-  // Marquer un message comme lu
-  markAsRead(id: string): Observable<Message> {
-    // Replace with actual API call
-    // Example: return this.http.post<Message>(`${this.apiUrl}/${id}/read`, {});
-    const message = this.mockMessages.find(msg => msg.id === id);
-    if (message) {
-      message.readAt = new Date();
-      return of(JSON.parse(JSON.stringify(message)));
-    }
-    return of(message as any); // Should handle error
-  }
-
-  // Marquer un message comme non lu
-  markAsUnread(id: string): Observable<Message> {
-    // Replace with actual API call
-    // Example: return this.http.post<Message>(`${this.apiUrl}/${id}/unread`, {});
-    const message = this.mockMessages.find(msg => msg.id === id);
-    if (message) {
-      message.readAt = null;
-      return of(JSON.parse(JSON.stringify(message)));
-    }
-    return of(message as any); // Should handle error
-  }
-
-  // Supprimer un message
-  deleteMessage(id: string): Observable<void> {
-    // Replace with actual API call
-    // Example: return this.http.delete<void>(`${this.apiUrl}/${id}`);
-    this.mockMessages = this.mockMessages.filter(msg => msg.id !== id);
-    return of(undefined);
-  }
-
-  // Envoyer un message
-  sendMessage(messageRequest: MessageRequest): Observable<Message> {
-    // Replace with actual API call
-    // Example: return this.http.post<Message>(`${this.apiUrl}/send`, messageRequest);
-    const newMessage: Message = {
-      id: `msg${this.mockMessages.length + 1}`,
-      subject: messageRequest.subject,
-      sender: this.mockUsers[0], // Mock sender (current user)
-      recipients: messageRequest.recipients.map(userId => this.mockUsers.find(u => u.id === userId)).filter(u => u) as User[],
-      content: messageRequest.content,
-      createdAt: new Date(),
-      readAt: null,
-      priority: messageRequest.priority,
-      // attachments: handle attachments if needed
+  private getCurrentUserDetails(): { id: string; name: string; role: string } | null {
+    const user = this.authService.getCurrentUserSync();
+    if (!user) return null;
+    const role = user.role || (user.roles && user.roles.length > 0 ? user.roles[0] : 'parent');
+    return {
+      id: user.id.toString(),
+      name: user.name || 'Utilisateur inconnu',
+      role: role
     };
-    this.mockMessages.push(newMessage);
-    return of(JSON.parse(JSON.stringify(newMessage)));
   }
 
-  // Télécharger une pièce jointe (placeholder)
-  downloadAttachment(messageId: string, attachmentId: string): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/${messageId}/attachments/${attachmentId}`, { responseType: 'blob' });
-  }
-
-  // Récupérer le nombre de messages non lus
-  getUnreadCount(): Observable<number> {
-    // Replace with actual API call
-    // Example: return this.http.get<{ count: number }>(`${this.apiUrl}/unread-count`).pipe(map(response => response.count));
-    const unreadCount = this.mockMessages.filter(m => m.recipients.some(r => r.id === 'currentUserMockId') && m.readAt === null).length;
-    return of(unreadCount);
-  }
-
-  // Rechercher des destinataires (utilisateurs) pour l'autocomplete
-  searchUsers(query: string): Observable<User[]> {
-    // Replace with actual API call
-    // Example: return this.http.get<User[]>(`${this.usersApiUrl}/search`, { params: { q: query } });
-    const lowerQuery = query.toLowerCase();
-    const filteredUsers = this.mockUsers.filter(user =>
-      user.name.toLowerCase().includes(lowerQuery) ||
-      (user.email && user.email.toLowerCase().includes(lowerQuery))
+  getInboxMessages(): Observable<Message[]> {
+    const currentUserId = this.getCurrentUserId();
+    if (!currentUserId) return of([]);
+    return this.http.get<Message[]>(`${this.apiUrl}?recipientId=${currentUserId}`).pipe(
+      map(messages => messages.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())),
+      catchError(error => {
+        console.error('Erreur lors de la récupération des messages de la boîte de réception', error);
+        return of([]);
+      })
     );
-    return of(JSON.parse(JSON.stringify(filteredUsers)));
   }
 
-  // Helper to build HttpParams (if using real API)
-  private buildParams(filter: any): HttpParams {
-    let params = new HttpParams();
-    if (filter) {
-      if (filter.read !== undefined) params = params.set('read', filter.read.toString());
-      if (filter.sender) params = params.set('sender', filter.sender);
-      // Add other params
+  getSentMessages(userId: string): Observable<Message[]> {
+    if (!userId) return of([]);
+    return this.http.get<Message[]>(`${this.apiUrl}?senderId=${userId}`).pipe(
+      map(messages => messages.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())),
+      catchError(error => {
+        console.error('Erreur lors de la récupération des messages envoyés', error);
+        return of([]);
+      })
+    );
+  }
+
+  getMessageById(messageId: string): Observable<Message | undefined> {
+    return this.http.get<Message>(`${this.apiUrl}/${messageId}`).pipe(
+      catchError(error => {
+        console.error(`Erreur lors de la récupération du message ${messageId}`, error);
+        return of(undefined);
+      })
+    );
+  }
+
+  // Updated sendMessage to handle FormData for attachments
+  sendMessage(messageData: { 
+    subject: string; 
+    content: string; 
+    recipients: { id: string; name: string; role: User['role'] }[]; 
+    priority?: MessagePriority; 
+    replyToId?: string | null; 
+  }, attachments?: File[]): Observable<Message> {
+    const currentUserDetails = this.getCurrentUserDetails();
+    if (!currentUserDetails) {
+      return throwError(() => new Error('Utilisateur non authentifié.'));
     }
-    return params;
+
+    const formData = new FormData();
+    formData.append('subject', messageData.subject);
+    formData.append('content', messageData.content);
+    formData.append('recipients', JSON.stringify(messageData.recipients.map(r => r.id))); // Send recipient IDs
+    formData.append('priority', messageData.priority || 'normal');
+    formData.append('senderId', currentUserDetails.id);
+    if (messageData.replyToId) {
+      formData.append('parentId', messageData.replyToId);
+    }
+
+    if (attachments && attachments.length > 0) {
+      attachments.forEach((file, index) => {
+        formData.append(`attachments[${index}]`, file, file.name);
+      });
+    }
+
+    return this.http.post<Message>(this.apiUrl, formData).pipe(
+      catchError(error => {
+        console.error("Erreur lors de l'envoi du message", error);
+        return throwError(() => error);
+      })
+    );
   }
 
+  markAsRead(messageId: string): Observable<boolean> {
+    return this.http.patch<{ success: boolean } | Message>(`${this.apiUrl}/${messageId}/read`, {}).pipe(
+      map(response => {
+        if (typeof (response as any).success === 'boolean') {
+          return (response as { success: boolean }).success;
+        } else if (response && (response as Message).id === messageId) {
+          return true;
+        }
+        return false;
+      }),
+      tap(success => {
+        if (success) {
+          this.notifyMessageStatusChange(messageId, 'read');
+        }
+      }),
+      catchError(error => {
+        console.error(`Erreur lors du marquage du message ${messageId} comme lu`, error);
+        return of(false);
+      })
+    );
+  }
+
+  markAsUnread(messageId: string): Observable<boolean> {
+    return this.http.patch<{ success: boolean } | Message>(`${this.apiUrl}/${messageId}/unread`, {}).pipe(
+      map(response => {
+        if (typeof (response as any).success === 'boolean') {
+          return (response as { success: boolean }).success;
+        } else if (response && (response as Message).id === messageId) {
+          return true;
+        }
+        return false;
+      }),
+      tap(success => {
+        if (success) {
+          this.notifyMessageStatusChange(messageId, 'unread');
+        }
+      }),
+      catchError(error => {
+        console.error(`Erreur lors du marquage du message ${messageId} comme non lu`, error);
+        return of(false);
+      })
+    );
+  }
+
+  deleteMessage(messageId: string): Observable<boolean> {
+    return this.http.delete<void>(`${this.apiUrl}/${messageId}`).pipe(
+      map(() => true),
+      tap(success => {
+        if (success) {
+          this.notifyMessageStatusChange(messageId, 'deleted');
+        }
+      }),
+      catchError(error => {
+        console.error(`Erreur lors de la suppression du message ${messageId}`, error);
+        return of(false);
+      })
+    );
+  }
+
+  getUnreadCount(userId: string): Observable<number> {
+    if (!userId) return of(0);
+    return this.http.get<number>(`${this.apiUrl}/unread-count?userId=${userId}`).pipe(
+      catchError(error => {
+        console.error('Erreur lors de la récupération du nombre de messages non lus', error);
+        return of(0);
+      })
+    );
+  }
+
+  getPotentialRecipients(): Observable<User[]> {
+    return this.http.get<User[]>(`${environment.apiUrl}/users/contacts`).pipe(
+      catchError(error => {
+        console.error('Erreur lors de la récupération des destinataires potentiels', error);
+        const fallbackUsers: User[] = [
+          { id: 'teacher_fallback', name: 'Enseignant Fallback', email: 'teacher@example.com', role: 'teacher' },
+          { id: 'admin_fallback', name: 'Administration Fallback', email: 'admin@example.com', role: 'admin' }
+        ];
+        return of(fallbackUsers);
+      })
+    );
+  }
+
+  // Added getUserById method
+  getUserById(userId: string): Observable<User | undefined> {
+    return this.getPotentialRecipients().pipe(
+      map(users => users.find(user => user.id === userId))
+    );
+  }
 }

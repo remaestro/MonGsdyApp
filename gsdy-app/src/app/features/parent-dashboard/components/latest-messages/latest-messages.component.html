@@ -5,7 +5,7 @@
       <div *ngIf="messages.length > 0; else noMessages">
         <ul>
           <li *ngFor="let message of messages; trackBy: trackByMessageId" class="mb-3 pb-3 border-b border-gray-200 last:border-b-0 last:pb-0 last:mb-0">
-            <a [routerLink]="message.link || '/messaging'" class="hover:text-blue-600">
+            <a [routerLink]="['/messaging/view', message.id]" class="hover:text-blue-600">
               <h6 class="font-semibold text-sm">{{ message.subject }}</h6>
               <p class="text-xs text-gray-500">De : {{ message.sender.name }} - {{ message.createdAt | date:'dd/MM/yy HH:mm' }}</p>
               <p class="text-xs text-gray-600 mt-1 truncate">{{ message.content | slice:0:100 }}</p>

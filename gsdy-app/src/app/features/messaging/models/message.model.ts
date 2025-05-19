@@ -1,33 +1,42 @@
 import { User } from '../../../core/models/user.model'; // Import User
 
-export interface Attachment { // Define Attachment interface
+export interface Attachment {
   id: string;
   fileName: string;
-  fileSize: number;
-  fileType: string;
-  url?: string; // Optional URL for download
+  fileType: string; // e.g., 'application/pdf', 'image/jpeg'
+  fileUrl: string; // URL to download/view the attachment
+  size?: number; // in bytes
 }
+
+export type MessagePriority = 'normal' | 'high' | 'urgent'; // Added MessagePriority type
 
 export interface Message {
   id: string;
   subject: string;
-  sender: User; // Changed from string to User
-  recipients: User[]; // Added recipients
-  content: string; // Added content
-  createdAt: Date; // Changed from 'date' to 'createdAt' for clarity
-  readAt?: Date | null; // Changed from 'isRead' to 'readAt' (Date or null if unread)
-  priority: 'normal' | 'high' | 'urgent'; // Added priority
-  attachments?: Attachment[]; // Added attachments
-  preview?: string; // Kept preview
-  link?: string; // Kept link, though might be redundant if routing by ID
+  content: string;
+  sender: {
+    id: string;
+    name: string;
+    role: User['role']; // Use User role type
+  };
+  recipients: {
+    id: string;
+    name: string;
+    role: User['role']; // Use User role type
+  }[]; // Array of recipient objects
+  createdAt: Date;
+  readAt?: Date;
+  isRead?: boolean; // Simplified read status
+  attachments?: Attachment[];
+  priority?: MessagePriority; // Used MessagePriority type
+  parentId?: string; // For threaded messages, optional
 }
 
-// This request type can be used when sending a message
 export interface MessageRequest {
   subject: string;
   content: string;
   recipients: string[]; // Array of user IDs
-  priority: 'normal' | 'high' | 'urgent';
+  priority: MessagePriority; // Used MessagePriority type
   parentId?: string; // For replies
   attachments?: File[]; // For new attachments
 }

@@ -1,0 +1,40 @@
+<div *ngIf="isLoading">
+  <p>Chargement du formulaire de paiement...</p>
+</div>
+
+<div *ngIf="error">
+  <p class="error-message">{{ error }}</p>
+  <a routerLink="/parent/payments/list">Retour à la liste des factures</a>
+</div>
+
+<div *ngIf="!isLoading && !error && (invoice$ | async) as inv">
+  <h2>Payer la facture : {{ inv.description }}</h2>
+  <p><strong>Montant :</strong> {{ inv.amount | currency:'EUR' }}</p>
+  <p><strong>Date d'échéance :</strong> {{ inv.dueDate | date:'dd/MM/yyyy' }}</p>
+  <p><strong>Statut :</strong> <span class="status-{{ inv.status }}">{{ inv.status }}</span></p>
+
+  <div *ngIf="inv.status === 'pending' || inv.status === 'overdue'">
+    <h3>Informations de paiement</h3>
+    <!-- Conteneur pour l'élément de carte Stripe -->
+    <div #cardElement id="card-element" class="stripe-card-element"></div>
+    
+    <!-- Afficher les erreurs de la carte Stripe ici -->
+    <div id="card-errors" role="alert" class="stripe-error-message" *ngIf="error">{{ error }}</div>
+
+    <button (click)="submitPayment()" [disabled]="paymentProcessing || !stripe || !card">
+      <span *ngIf="paymentProcessing">Traitement...</span>
+      <span *ngIf="!paymentProcessing">Payer {{ inv.amount | currency:'EUR' }}</span>
+    </button>
+  </div>
+
+  <div *ngIf="inv.status === 'paid'">
+    <p class="success-message">Cette facture a déjà été payée.</p>
+  </div>
+  
+  <a routerLink="/parent/payments/list" class="back-link">Retour à la liste des factures</a>
+</div>
+
+<ng-template #notFound>
+  <p class="error-message">Facture non trouvée.</p>
+  <a routerLink="/parent/payments/list" class="back-link">Retour à la liste des factures</a>
+</ng-template>

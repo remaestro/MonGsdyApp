@@ -1,0 +1,89 @@
+.container {
+  max-width: 900px;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem; /* rounded-md */
+  font-weight: 600; /* font-semibold */
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-color-dark);
+}
+
+/* Styles pour l'indicateur de chargement */
+.animate-spin {
+  border-top-color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+/* Styles pour les messages non lus */
+.bg-primary-50 {
+  background-color: #f0f9ff; /* Un bleu très clair, à ajuster selon votre palette */
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-primary-700 {
+    color: var(--primary-color-darker);
+}
+
+.text-primary-600 {
+    color: var(--primary-color-dark);
+}
+
+.text-secondary-600 {
+    color: var(--secondary-color-dark);
+}
+
+.bg-accent-500 {
+    background-color: var(--accent-color);
+}
+
+.bg-warning-100 {
+    background-color: var(--warning-color-light);
+}
+.text-warning-800 {
+    color: var(--warning-color-darker);
+}
+
+.bg-error-100 {
+    background-color: var(--error-color-light);
+}
+.text-error-700 {
+    color: var(--error-color-dark);
+}
+.text-error-800 {
+    color: var(--error-color-darker);
+}
+.border-error-400 {
+    border-color: var(--error-color);
+}
+
+/* Assurer la responsivité */
+@media (max-width: 640px) {
+  .container {
+    padding: 1rem;
+  }
+  .text-3xl {
+    font-size: 1.875rem; /* text-2xl */
+  }
+  .flex-shrink-0.mr-3 {
+    margin-right: 0.5rem;
+  }
+  .ml-4 {
+    margin-left: 0.5rem;
+  }
+}

@@ -10,7 +10,7 @@ import { ServerErrorPageComponent } from './core/error-handling/components/serve
 import { AccessDeniedPageComponent } from './core/error-handling/components/access-denied-page/access-denied-page.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { 
     path: 'profile',
@@ -25,7 +25,7 @@ const routes: Routes = [
   },
   { 
     path: 'notifications', 
-    loadChildren: () => import('./features/notifications/notifications.module').then(m => m.NotificationsFeatureModule),
+    loadChildren: () => import('./features/notifications/notifications.module').then(m => m.NotificationsModule),
     canActivate: [authGuard]
   },
   // Route parent pour les features des parents d'élèves

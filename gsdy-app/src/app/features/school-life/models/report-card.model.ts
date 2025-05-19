@@ -13,4 +13,5 @@ export interface SubjectGrade {
   grade?: string | number; // Note (ex: "A", "15/20", 85)
   teacherAppreciation?: string;
   average?: string | number; // Moyenne de la classe pour cette matière (optionnel)
+  coefficient?: number; // Ajout du coefficient
 }

@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.monsgdyapp.com/api', // Ajout de apiUrl pour la production
-  debug: false // Ajout de la propriété debug si elle est utilisée ailleurs
+  apiUrl: 'https://api.example.com/api', // Remplacez par votre URL d'API de production
+  debug: false,
+  stripePublishableKey: 'YOUR_STRIPE_PUBLISHABLE_KEY' // Ajoutez votre clé publique Stripe ici
 };

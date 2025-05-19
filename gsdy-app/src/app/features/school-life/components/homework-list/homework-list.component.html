@@ -1,6 +1,16 @@
 <div class="homework-container" *ngIf="homework$ | async as homeworkItems">
-  <h2>Devoirs pour l'enfant {{ childId }}</h2>
-  <div *ngIf="homeworkItems.length > 0; else noHomework">
+  <h2 *ngIf="selectedChild">Devoirs pour l'enfant {{ selectedChild.firstName }} {{ selectedChild.lastName }} (ID: {{ selectedChild.id }})</h2>
+  <h2 *ngIf="!selectedChild">Devoirs</h2> <!-- Fallback si aucun enfant n'est sélectionné -->
+  
+  <div *ngIf="isLoading" class="loading-indicator">
+    Chargement des devoirs...
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!isLoading && !error && homeworkItems.length > 0; else noHomework">
     <ul>
       <li *ngFor="let item of homeworkItems" [ngClass]="{'completed': item.isCompleted}">
         <strong>{{ item.subject }}</strong> (Pour le {{ item.dueDate | date: 'dd/MM/yyyy' }}):
@@ -11,6 +21,6 @@
     </ul>
   </div>
   <ng-template #noHomework>
-    <p>Aucun devoir assigné pour le moment.</p>
+    <p *ngIf="!isLoading && !error">Aucun devoir assigné pour le moment pour {{ selectedChild?.firstName || "cet enfant" }}.</p>
   </ng-template>
 </div>

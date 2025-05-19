@@ -46,6 +46,21 @@ export class AuthService {
   }
   
   /**
+   * Récupérer les détails de l'utilisateur actuellement connecté (synchrone)
+   */
+  public getCurrentUserSync(): any | null {
+    return this.userSubject.getValue();
+  }
+
+  /**
+   * Récupérer l'ID de l'utilisateur actuellement connecté
+   */
+  public getCurrentUserId(): string | null {
+    const user = this.userSubject.getValue();
+    return user ? user.id.toString() : null; // Assumant que l'ID est un nombre et doit être une chaîne
+  }
+
+  /**
    * Connecter un utilisateur
    */
   login(username: string, password: string): Observable<any> {

@@ -1,0 +1,46 @@
+<div class="invoice-list-container">
+  <h2>Mes Factures</h2>
+
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="(invoices$ | async) === null && !isLoading && !error" class="empty-state">
+    <p>Aucune facture disponible pour le moment.</p>
+    <!-- Vous pouvez ajouter une icône ou une image ici -->
+  </div>
+
+  <div *ngIf="isLoading" class="loading-spinner">
+    <p>Chargement des factures...</p> <!-- Remplacez par un vrai spinner si disponible -->
+  </div>
+
+  <div *ngIf="(invoices$ | async) as invoices">
+    <div *ngIf="invoices.length > 0; else noInvoicesFound" class="invoices-grid">
+      <div *ngFor="let invoice of invoices" class="invoice-card" [ngClass]="getInvoiceStatusClass(invoice)">
+        <div class="invoice-card-header">
+          <h3>Facture #{{ invoice.id.substring(0, 8) }}</h3>
+          <span class="invoice-status status-{{invoice.status}}">{{ invoice.status | titlecase }}</span>
+        </div>
+        <div class="invoice-card-body">
+          <p><strong>Description:</strong> {{ invoice.description }}</p>
+          <p><strong>Montant:</strong> {{ invoice.amount | currency:'EUR':'symbol':'1.2-2':'fr' }}</p>
+          <p><strong>Date d'échéance:</strong> {{ invoice.dueDate | date:'dd/MM/yyyy' }}</p>
+          <p><strong>Date d'émission:</strong> {{ invoice.createdAt | date:'dd/MM/yyyy' }}</p>
+        </div>
+        <div class="invoice-card-footer">
+          <a [routerLink]="['/parent/payments/pay', invoice.id]" class="btn btn-primary" *ngIf="invoice.status === 'pending' || invoice.status === 'overdue'">
+            Payer maintenant
+          </a>
+          <a [routerLink]="['/parent/payments/invoice', invoice.id]" class="btn btn-secondary">
+            Voir les détails
+          </a>
+        </div>
+      </div>
+    </div>
+    <ng-template #noInvoicesFound>
+      <div class="empty-state" *ngIf="!isLoading">
+        <p>Aucune facture trouvée correspondant à vos critères.</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

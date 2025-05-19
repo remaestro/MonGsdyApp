@@ -1,30 +1,31 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
-// Composants
-import { NotificationListComponent } from './components/notification-list/notification-list.component';
-
-// Services
+import { NotificationsRoutingModule } from './notifications-routing.module';
+import { NotificationsListComponent } from './components/notifications-list/notifications-list.component';
 import { NotificationService } from './services/notification.service';
 
-const routes: Routes = [
-  { path: '', component: NotificationListComponent },
-];
+// Importations des modules partagés ou des dépendances nécessaires
+// import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
   declarations: [
-    NotificationListComponent
+    NotificationsListComponent,
+    // Autres composants liés aux notifications
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild(routes),
-    FormsModule,
-    ReactiveFormsModule
+    RouterModule,
+    NotificationsRoutingModule,
+    // SharedModule, // Si vous avez un module partagé pour des éléments d'UI communs
   ],
   providers: [
-    NotificationService
+    NotificationService,
+    // Autres services spécifiques aux notifications
+  ],
+  exports: [
+    NotificationsListComponent, // Si vous prévoyez d'utiliser ce composant ailleurs directement
   ]
 })
-export class NotificationsFeatureModule { }
+export class NotificationsModule { }

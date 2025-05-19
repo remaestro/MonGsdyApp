@@ -1,0 +1,92 @@
+.container {
+  max-width: 800px;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+.btn-primary:hover {
+  background-color: var(--primary-color-dark);
+}
+.btn-primary:disabled {
+  background-color: var(--primary-color-light);
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  color: white;
+}
+.btn-secondary:hover {
+  background-color: var(--secondary-color-dark);
+}
+.btn-secondary:disabled {
+  background-color: var(--secondary-color-light);
+  cursor: not-allowed;
+}
+
+.text-primary-700 {
+  color: var(--primary-color-darker);
+}
+.text-primary-600 {
+  color: var(--primary-color-dark);
+}
+.text-primary-500 {
+  color: var(--primary-color);
+}
+.bg-primary-100 {
+  background-color: var(--primary-color-lightest);
+}
+.border-primary-500 {
+  border-color: var(--primary-color);
+}
+.focus\:ring-primary-500:focus {
+  --tw-ring-color: var(--primary-color);
+}
+.focus\:border-primary-500:focus {
+  border-color: var(--primary-color);
+}
+
+.text-error-600 {
+  color: var(--error-color-dark);
+}
+.text-error-500 {
+  color: var(--error-color);
+}
+.bg-error-100 {
+  background-color: var(--error-color-light);
+}
+.border-error-400 {
+  border-color: var(--error-color);
+}
+
+.bg-success-100 {
+  background-color: var(--success-color-light);
+}
+.text-success-700 {
+  color: var(--success-color-dark);
+}
+.border-success-400 {
+  border-color: var(--success-color);
+}
+
+/* Styles pour l'autocomplete des destinataires */
+.min-h-\[40px\] {
+  min-height: 40px;
+}
+
+.min-w-\[200px\] {
+  min-width: 200px;
+}
+
+/* Surcharge pour que l'input dans la zone des destinataires n'ait pas de bordure visible */
+input[type="text"].border-none {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* S'assurer que Font Awesome est chargé si ce n'est pas globalement fait */
+/* @import "~@fortawesome/fontawesome-free/css/all.min.css"; */
+/* Commenté car déjà importé dans message-detail.component.css, 
+   et sera probablement dans un module partagé ou styles globaux à terme */

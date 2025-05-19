@@ -1,0 +1,10 @@
+/* Styles pour ScheduleComponent */
+:host {
+  display: block;
+}
+
+/* Fonctionnalité pour itérer sur les clés d'un objet dans le template, si nécessaire */
+/* Peut être déplacé dans un pipe si utilisé plus globalement */
+.hidden {
+  display: none;
+}
